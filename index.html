@@ -474,6 +474,18 @@ main{padding:0 12px!important;max-width:100%!important}
  .header .headinner .headactions #savedBtn:before{font-size:24px!important}
  .header .headinner .headactions #cartBtn:before{font-size:17px!important}
 }
+
+/* Mobile account page: keep the welcome card clear of the sticky header and balance its spacing. */
+@media(max-width:700px){
+ #dashboardPage{padding-top:22px!important;padding-bottom:28px!important;scroll-margin-top:0!important}
+ #dashboardPage .dashboard-wrap{padding-top:4px!important}
+ #dashboardPage .pagecrumb{display:block!important;margin:0 0 14px!important;line-height:1.5!important}
+ #dashboardPage .dash-hero{margin-top:0!important;margin-bottom:16px!important}
+ #dashboardPage .dash-profile{max-width:100%!important;min-width:0!important}
+ #dashboardPage .dash-profile>div:last-child{min-width:0!important}
+ #dashboardPage #dashWelcome{overflow-wrap:anywhere!important}
+ #dashboardPage .dash-metrics{margin-top:14px!important}
+}
 </style>
 </head>
 <body>
@@ -638,7 +650,28 @@ function goAuth(){setAuthMode('signup');return routeTo('authPage','account')}
 function goFavorites(){closeSideMenu();renderFavorites();return routeTo('favoritesPage','saved')}
 function goDashboard(){const liveUser=window.izzyFirebaseAuth?.currentUser;if(!previewSignedIn&&liveUser){window.setizzySignedIn({name:liveUser.displayName||liveUser.email?.split('@')[0]||'Izzy Power Customer',email:liveUser.email||'',provider:liveUser.providerData?.[0]?.providerId||'password',uid:liveUser.uid})}if(!previewSignedIn&&!liveUser){setAuthMode('signup');pendingCheckout=false;routeTo('authPage','account');const notice=document.getElementById('authNotice');if(notice)notice.innerHTML='<p class="v4-muted">Sign in or create an account to view your dashboard.</p>';return false}renderDashboard();return routeTo('dashboardPage','dashboard')}
 function goProfile(){if(!previewSignedIn){return goDashboard()}loadProfileForm();return routeTo('profilePage','profile')}
-async function goAdminDashboard(){closeSideMenu();if(window.izzyAuthReady)await window.izzyAuthReady;const adminUser=window.izzyFirebaseAuth?.currentUser;if(!adminUser||adminUser.email?.toLowerCase()!=='Ubahdaniel823@gmail.com'.toLowerCase()||!adminUser.emailVerified){toast(!adminUser?'Sign in with the authorised administrator email to continue.':!adminUser.emailVerified?'Verify the administrator email address first, then sign in again.':'This account is not authorised for administration.');return goAuth()}if(!document.getElementById('adminPage')){const page=document.createElement('section');page.id='adminPage';page.className='pageview';page.innerHTML='<div class="dashboard-wrap"><p class="pagecrumb"><button onclick="goHome()">Home</button> / Administration</p><div class="dash-hero"><div><div class="eyebrow" style="color:#ffb77b">IZZY POWER STORE</div><h1 class="page-title">Admin Dashboard</h1><p>Manage products, orders, catalogue visibility and store operations.</p></div><button class="cta" onclick="goHome()">View storefront ↗</button></div><div class="dash-metrics"><div class="metric-card"><div class="metric-label">Published products</div><div class="metric-value" id="vtAdminProductCount">—</div></div><div class="metric-card"><div class="metric-label">Orders</div><div class="metric-value" id="vtAdminOrderCount">—</div></div><div class="metric-card"><div class="metric-label">Administrator</div><div class="metric-value" style="font-size:16px">Verified account</div><small></small></div></div><div id="adminPanelMount"></div></div>';document.querySelector('main').after(page)}routeTo('adminPage','admin-dashboard');if(window.izzyFirebaseAuth.currentUser&&window.izzyFirebaseAuth.currentUser.email?.toLowerCase()==='Ubahdaniel823@gmail.com'){window.izzyIsAdmin=true;window.izzyAddAdminPanel(window.izzyFirebaseAuth.currentUser)}else{const mount=document.getElementById('adminPanelMount');if(mount)mount.innerHTML='<div style="padding:18px;border:1px solid #f2c7c7;border-radius:12px;background:#fff7f7;color:#842029"><strong>Admin session not detected.</strong><p style="margin:8px 0 0">Please sign in with Ubahdaniel823@gmail.com, then open Admin Dashboard again.</p><button type="button" onclick="goAuth()" style="margin-top:12px;padding:10px 14px">Sign in</button></div>'}return false}
+async function goAdminDashboard(){
+ closeSideMenu();
+ if(window.izzyAuthReady)await Promise.race([window.izzyAuthReady,new Promise(resolve=>setTimeout(resolve,1800))]);
+ if(!document.getElementById('adminPage')){
+  const page=document.createElement('section');
+  page.id='adminPage';page.className='pageview';
+  page.innerHTML='<div class="dashboard-wrap"><p class="pagecrumb"><button onclick="goHome()">Home</button> / Administration</p><div class="dash-hero"><div><div class="eyebrow" style="color:#ffb77b">IZZY POWER STORE</div><h1 class="page-title">Admin Dashboard</h1><p>Manage products, orders, catalogue visibility and store operations.</p></div><button class="cta" onclick="goHome()">View storefront ↗</button></div><div class="dash-metrics"><div class="metric-card"><div class="metric-label">Published products</div><div class="metric-value" id="vtAdminProductCount">—</div></div><div class="metric-card"><div class="metric-label">Orders</div><div class="metric-value" id="vtAdminOrderCount">—</div></div><div class="metric-card"><div class="metric-label">Administrator</div><div class="metric-value" style="font-size:16px">Verified account</div></div></div><div id="adminPanelMount"></div></div>';
+  document.querySelector('main').after(page);
+ }
+ routeTo('adminPage','admin-dashboard');
+ const adminUser=window.izzyFirebaseAuth?.currentUser;
+ const isAuthorised=!!adminUser&&adminUser.email?.toLowerCase()==='Ubahdaniel823@gmail.com'.toLowerCase()&&adminUser.emailVerified;
+ if(isAuthorised){
+  window.izzyIsAdmin=true;
+  if(window.izzyAddAdminPanel)window.izzyAddAdminPanel(adminUser);
+ }else{
+  window.izzyIsAdmin=false;
+  const mount=document.getElementById('adminPanelMount');
+  if(mount)mount.innerHTML='<div style="padding:18px;border:1px solid #f2c7c7;border-radius:12px;background:#fff7f7;color:#842029"><strong>Administrator sign-in required.</strong><p style="margin:8px 0 0">Sign in with the verified administrator account to load the protected management tools.</p><button type="button" onclick="goAuth()" style="margin-top:12px;padding:10px 14px">Sign in</button></div>';
+ }
+ return false;
+}
 function navHomeTo(id){goHome();setTimeout(()=>document.getElementById(id)?.scrollIntoView({behavior:'smooth'}),60);return false}
 function openSideMenu(){document.getElementById('sideShade').classList.add('open');document.body.style.overflow='hidden'}
 function closeSideMenu(){document.getElementById('sideShade')?.classList.remove('open');document.body.style.overflow=''}
