@@ -245,6 +245,60 @@ main{max-width:none;padding:0 clamp(12px,2vw,24px)}
 @media(max-width:800px){.home-categories .categorygrid{grid-template-columns:repeat(3,minmax(0,1fr));gap:9px}.home-categories .categorytile{min-height:132px;aspect-ratio:.95/1;border-radius:13px}.home-categories .categorytile b{font-size:12px;padding:30px 9px 10px}}
 @media(max-width:420px){.home-categories .categorygrid{grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}.home-categories .categorytile{min-height:145px;aspect-ratio:1.15/1}.home-categories .categorytile b{font-size:13px;padding:34px 11px 11px}}
 </style>
+
+<style id="izzy-homepage-compact-v1">
+/* Compact mobile-first homepage refinements requested by the owner. */
+.topbar{padding:5px 8px;font-size:10px;line-height:1.25}
+.header .headinner{gap:7px;padding:6px 10px;flex-wrap:nowrap}
+.header .logo,.header .headinner .logo{width:62px!important;max-width:17vw!important}
+.header .search{order:0;flex:1 1 auto;min-width:58px;padding:2px 4px 2px 8px;border-radius:10px}
+.header .search input{padding:6px 2px;font-size:11px}
+.header .search button{padding:6px 8px;font-size:11px}
+.header .headactions{flex:0 0 auto;gap:4px;margin-left:0}
+.header .headactions .iconbtn{width:32px;min-width:32px;height:32px;padding:5px 3px;display:grid;place-items:center;border-radius:9px;font-size:13px;position:relative}
+.header .iconbtn strong{position:absolute;top:-5px;right:-4px;margin:0;padding:1px 4px;font-size:9px}
+.header .nav{flex-wrap:nowrap;white-space:nowrap;overflow-x:auto;overflow-y:hidden;gap:14px;padding:0 10px 6px;font-size:11px;scrollbar-width:none}
+.header .nav::-webkit-scrollbar{display:none}
+.hero{margin:10px 0 14px;border-radius:18px}
+.hero-copy{padding:22px 18px 14px}
+.hero h1{font-size:clamp(29px,7vw,38px);letter-spacing:-1px;margin:9px 0}
+.hero p{font-size:13px;line-height:1.5;margin:8px 0}
+.hero .cta{margin-top:6px;padding:11px 15px;font-size:13px}
+.hero-benefits{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:6px;margin:12px 0 0}
+.hero-benefits .benefit{gap:7px;padding:7px;border-radius:10px;background:#ffffff12;border-color:#ffffff30;color:#fff;align-items:center}
+.hero-benefits .benefit .sym{width:27px;height:27px;min-width:27px;border-radius:8px;font-size:14px}
+.hero-benefits .benefit b{font-size:10px;line-height:1.2;color:#fff}
+.hero-benefits .benefit small{font-size:9px;line-height:1.25;color:#d4deeb;margin-top:2px}
+.hero-art{min-height:130px;padding:0 14px 20px}
+.hero-art img{height:130px}
+.hero .dots{bottom:5px}
+.section.home-categories{margin-top:15px;padding:11px;border-radius:16px}
+.home-categories .sectionhead{margin-bottom:10px}
+.home-categories .sectionhead h2{font-size:18px}
+.home-categories .sectionhead p{font-size:11px}
+.home-categories .categorygrid{grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+.home-categories .categorytile{aspect-ratio:1/1;min-height:0;padding:9px;border-radius:12px;position:relative;overflow:hidden;background-image:linear-gradient(180deg,#071d3520,#071d35b8),var(--cat-image);background-position:center;background-size:cover;color:#fff}
+.home-categories .categorytile b{font-size:12px;line-height:1.2;margin:0;position:absolute;left:8px;right:8px;bottom:8px;padding:7px;border-radius:7px;background:#071d35b8;color:#fff}
+@media(min-width:801px){
+ .header .headinner{padding:8px 18px}
+ .header .logo,.header .headinner .logo{width:92px!important;max-width:14vw!important}
+ .hero-copy{padding:30px}
+ .hero-benefits{max-width:540px}
+ .home-categories .categorygrid{grid-template-columns:repeat(4,minmax(0,1fr))}
+ .home-categories .categorytile{aspect-ratio:1/1}
+}
+@media(max-width:380px){
+ .header .logo,.header .headinner .logo{width:50px!important;max-width:14vw!important}
+ .header .headinner{gap:5px;padding:5px 7px}
+ .header .headactions .iconbtn{width:28px;min-width:28px;height:30px}
+ .header .nav{gap:11px;font-size:10px}
+ .hero-copy{padding:18px 13px 12px}
+ .hero-benefits .benefit{padding:6px}
+ .hero-benefits .benefit b{font-size:9px}
+ .hero-benefits .benefit small{font-size:8px}
+}
+</style>
+
 </head>
 <body>
 <div class="topbar">Smart tech. Better value. <b>Flexible ways to pay</b> — delivery across Nigeria</div>
@@ -258,15 +312,16 @@ main{max-width:none;padding:0 clamp(12px,2vw,24px)}
 </header>
 <main>
  <section class="hero" aria-label="Featured products">
-  <div class="hero-copy"><div class="eyebrow" id="heroEyebrow">SMARTER POWER. BETTER LIVING.</div><h1 id="heroTitle">Electronics for<br>everyday living.</h1><p id="heroText">Discover televisions, cooling, kitchen appliances and power solutions for your home or business.</p><button class="cta" onclick="document.querySelector('#new').scrollIntoView({behavior:'smooth'})">Explore electronics&nbsp; ↗</button></div>
-  <div class="hero-art"><img id="heroImage" src="https://images.unsplash.com/photo-1498049794561-7780e7231661?auto=format&fit=crop&w=900&q=85" alt="Laptop and technology products"><div class="dots"><button class="dot active" aria-label="Slide 1"></button><button class="dot" aria-label="Slide 2"></button><button class="dot" aria-label="Slide 3"></button></div></div>
- </section>
- <section class="benefits">
+  <div class="hero-copy"><div class="eyebrow" id="heroEyebrow">SMARTER POWER. BETTER LIVING.</div><h1 id="heroTitle">Electronics for<br>everyday living.</h1><p id="heroText">Discover televisions, cooling, kitchen appliances and power solutions for your home or business.</p><button class="cta" onclick="document.querySelector('#new').scrollIntoView({behavior:'smooth'})">Explore electronics&nbsp; ↗</button> <section class="benefits hero-benefits" aria-label="Shopping benefits">
   <div class="benefit"><div class="sym">🚚</div><div><b>Delivery across Nigeria</b><small>Delivery details at checkout</small></div></div>
   <div class="benefit"><div class="sym">🔒</div><div><b>Secure checkout</b><small>Clear payment instructions</small></div></div>
   <div class="benefit"><div class="sym">💳</div><div><b>Flexible payments</b><small>Pay now, save, or apply with Klump</small></div></div>
   <div class="benefit"><div class="sym">💬</div><div><b>We're here to help</b><small>Contact the Izzy Power team</small></div></div>
  </section>
+ </div>
+  <div class="hero-art"><img id="heroImage" src="https://images.unsplash.com/photo-1498049794561-7780e7231661?auto=format&fit=crop&w=900&q=85" alt="Laptop and technology products"><div class="dots"><button class="dot active" aria-label="Slide 1"></button><button class="dot" aria-label="Slide 2"></button><button class="dot" aria-label="Slide 3"></button></div></div>
+ </section>
+
  <section class="section home-categories" aria-label="Shop by category"><div class="sectionhead"><div><h2>Shop by category</h2><p>Find the right electronics for every room and need</p></div><button class="seeall" onclick="goShop()">See all products →</button></div><div class="categorygrid">
   <button class="categorytile" style="--cat-image:url('https://images.unsplash.com/photo-1593359677879-a4bb92f829d1?auto=format&fit=crop&w=700&q=85')" onclick="goShop('Televisions')"><b>Televisions</b></button>
   <button class="categorytile" style="--cat-image:url('https://images.unsplash.com/photo-1631545806609-8f6f4f8f4c20?auto=format&fit=crop&w=700&q=85')" onclick="goShop('Air Conditioners')"><b>Air Conditioners</b></button>
