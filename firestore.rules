@@ -1,0 +1,32 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    function signedIn() {
+      return request.auth != null;
+    }
+    function verifiedAdmin() {
+      return signedIn()
+        && request.auth.token.email == 'Ubahdaniel823@gmail.com'
+        && request.auth.token.email_verified == true;
+    }
+    match /products/{productId} {
+      allow read: if true;
+      allow create, update, delete: if verifiedAdmin();
+    }
+    match /categories/{categoryId} {
+      allow read: if true;
+      allow create, update, delete: if verifiedAdmin();
+    }
+    match /orders/{orderId} {
+      allow read: if verifiedAdmin()
+        || (signedIn() && resource.data.uid == request.auth.uid);
+      allow create: if signedIn()
+        && request.resource.data.uid == request.auth.uid;
+      allow update, delete: if verifiedAdmin();
+    }
+    // Default deny: no other collections are accessible from the client.
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}
