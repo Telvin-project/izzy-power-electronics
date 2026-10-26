@@ -648,7 +648,7 @@ import { initializeApp, getApps } from 'https://www.gstatic.com/firebasejs/11.10
 import { getAuth, onAuthStateChanged, createUserWithEmailAndPassword, signInWithEmailAndPassword, updateProfile, signOut, setPersistence, browserLocalPersistence } from 'https://www.gstatic.com/firebasejs/11.10.0/firebase-auth.js';
 import { getFirestore, collection, doc, getDocs, setDoc, addDoc, updateDoc, deleteDoc, query, orderBy, serverTimestamp } from 'https://www.gstatic.com/firebasejs/11.10.0/firebase-firestore.js';
 import { getStorage, ref, uploadBytes, getDownloadURL } from 'https://www.gstatic.com/firebasejs/11.10.0/firebase-storage.js';
-const firebaseConfig={apiKey:"PASTE_IZZY_FIREBASE_API_KEY",authDomain:"PASTE_IZZY_FIREBASE_AUTH_DOMAIN",projectId:"PASTE_IZZY_FIREBASE_PROJECT_ID",storageBucket:"PASTE_IZZY_FIREBASE_STORAGE_BUCKET",messagingSenderId:"PASTE_IZZY_FIREBASE_MESSAGING_SENDER_ID",appId:"PASTE_IZZY_FIREBASE_APP_ID"};
+const firebaseConfig={apiKey:"AIzaSyDvD9J55QeD7vmw8xJazXZUtpFg_3gQ2oM",authDomain:"izzy-power-electronics-hub.firebaseapp.com",projectId:"izzy-power-electronics-hub",storageBucket:"izzy-power-electronics-hub.firebasestorage.app",messagingSenderId:"825256981121",appId:"1:825256981121:web:f69fa119adb91607f8d380"};
 if(firebaseConfig.apiKey.startsWith("PASTE_")){console.warn("Izzy Power Firebase is not configured yet. This storefront is isolated from Voyage Tech; configure an Izzy-only Firebase project before enabling real accounts, orders, uploads and admin features.");document.documentElement.dataset.izzyBackend="not-configured";} else {
 const app=getApps().length?getApps()[0]:initializeApp(firebaseConfig),auth=getAuth(app),db=getFirestore(app),storage=getStorage(app);
 const ADMIN='Ubahdaniel823@gmail.com'.toLowerCase();
