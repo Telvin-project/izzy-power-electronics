@@ -515,20 +515,17 @@ main{padding:0 12px!important;max-width:100%!important}
 #checkoutModal .wide,#checkoutModal #submitOrder{min-height:52px!important;border-radius:13px!important;background:linear-gradient(100deg,#f4bf1a,#ffda58)!important;color:#17243a!important;font-size:14px!important;font-weight:850!important;box-shadow:0 7px 18px #dba90e2b!important}
 #checkoutModal .notice{border-radius:12px!important;background:#eef4fa!important;padding:12px!important;line-height:1.6!important}
 #checkoutModal .success{padding:28px 18px!important}
-#izzyCinematicLoader{position:fixed;inset:0;z-index:100500;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:22px;overflow:hidden;background-color:#0b0b0e;background-image:radial-gradient(ellipse at 50% 52%,#1c1117 0%,#0e0d11 52%,#09090b 100%),linear-gradient(135deg,transparent 48%,#35101622 49%,#35101622 51%,transparent 52%);color:#fff;opacity:1;visibility:visible;transition:opacity .55s ease,visibility .55s ease}
-#izzyCinematicLoader:before{content:"";position:absolute;inset:0;pointer-events:none;opacity:.55;background-image:linear-gradient(90deg,transparent 0 96%,#8b25251c 97%),linear-gradient(0deg,transparent 0 96%,#8b25251c 97%);background-size:34px 34px;mask-image:linear-gradient(to bottom,transparent,#000 12%,#000 90%,transparent)}
-#izzyCinematicLoader:after{content:"";position:absolute;left:20%;right:20%;top:48%;height:150px;background:radial-gradient(ellipse,#e22b3c12,transparent 70%);pointer-events:none}
-#izzyCinematicLoader.is-leaving{opacity:0;visibility:hidden;pointer-events:none}
-#izzyCinematicLoader:before{content:"";position:absolute;inset:0;pointer-events:none;opacity:.3;background-image:linear-gradient(90deg,transparent 49%,#7e293016 50%,transparent 51%),linear-gradient(0deg,transparent 49%,#7e293016 50%,transparent 51%);background-size:42px 42px}
+#izzyCinematicLoader{position:fixed;inset:0;z-index:100500;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:22px;overflow:hidden;background-color:#071d35;background-image:radial-gradient(ellipse at 50% 52%,#183657 0%,#0b2540 48%,#06172a 100%);color:#fff;opacity:1;visibility:visible;transition:opacity .55s ease,visibility .55s ease}
+#izzyCinematicLoader:before{content:"";position:absolute;inset:0;pointer-events:none;opacity:.22;background-image:linear-gradient(90deg,transparent 49%,#ffc92818 50%,transparent 51%),linear-gradient(0deg,transparent 49%,#ffc92818 50%,transparent 51%);background-size:42px 42px}
 #izzyCinematicLoader:after{content:"";position:absolute;inset:0;pointer-events:none;background:radial-gradient(ellipse at center,transparent 15%,#0005 100%)}
 #izzyCinematicLoader.is-leaving{opacity:0!important;visibility:hidden!important;pointer-events:none!important}
 #izzyCinematicLoader .izzy-loader-mark{position:relative;z-index:1;width:78px;height:78px;display:grid;place-items:center;animation:izzyLogoBounce 1.05s cubic-bezier(.36,.07,.19,.97) infinite alternate;filter:drop-shadow(0 10px 22px #0009)}
-#izzyCinematicLoader img{display:block;width:72px!important;height:72px!important;object-fit:contain!important;border-radius:0!important;background:transparent!important}
-#izzyCinematicLoader .izzy-loader-ring{position:absolute;width:108px;height:108px;border:3px solid #ffffff0b;border-top-color:#e32d3d;border-right-color:#e32d3d;border-bottom-color:#dedde2;border-radius:50%;animation:izzySpin 1.2s linear infinite}
-#izzyCinematicLoader .izzy-loader-name{position:relative;z-index:1;font-size:clamp(30px,8vw,44px);font-weight:850;letter-spacing:1px;background:linear-gradient(100deg,#ff263a 0%,#ff5a62 45%,#d8d8df 78%);-webkit-background-clip:text;background-clip:text;color:transparent;text-shadow:0 0 32px #ed28331c}
+#izzyCinematicLoader .izzy-loader-symbol{display:grid;place-items:center;width:72px;height:72px;color:#ffc928;font-size:58px;line-height:1;text-shadow:0 0 26px #ffc92845}
+#izzyCinematicLoader .izzy-loader-ring{position:absolute;width:108px;height:108px;border:3px solid #ffffff12;border-top-color:#ffc928;border-right-color:#ffe06a;border-bottom-color:#ffffffb0;border-radius:50%;animation:izzySpin 1.2s linear infinite}
+#izzyCinematicLoader .izzy-loader-name{position:relative;z-index:1;font-size:clamp(30px,8vw,44px);font-weight:850;letter-spacing:1px;background:linear-gradient(100deg,#ffc928 0%,#ffe06a 45%,#ffffff 88%);-webkit-background-clip:text;background-clip:text;color:transparent;text-shadow:0 0 32px #ffc9281c}
 #izzyCinematicLoader .izzy-loader-line{position:relative;z-index:1;width:min(54vw,240px);height:4px;border-radius:9px;background:#ffffff20;overflow:hidden;margin-top:6px}
-#izzyCinematicLoader .izzy-loader-line:after{content:"";display:block;width:45%;height:100%;border-radius:9px;background:linear-gradient(90deg,#d92738,#e6dce0);animation:izzyLoadLine 1.2s ease-in-out infinite}
-#izzyCinematicLoader .izzy-loader-caption{position:relative;z-index:1;font-size:10px;letter-spacing:3px;color:#8f8b95;text-transform:uppercase;margin-top:4px}
+#izzyCinematicLoader .izzy-loader-line:after{content:"";display:block;width:45%;height:100%;border-radius:9px;background:linear-gradient(90deg,#ffc928,#ffe06a,#ffffff);animation:izzyLoadLine 1.2s ease-in-out infinite}
+#izzyCinematicLoader .izzy-loader-caption{position:relative;z-index:1;font-size:10px;letter-spacing:3px;color:#d6dce5;text-transform:uppercase;margin-top:4px}
 @keyframes izzyLogoBounce{from{transform:translateY(-7px) scale(.98)}to{transform:translateY(8px) scale(1.035)}}
 @keyframes izzySpin{to{transform:rotate(360deg)}}
 @keyframes izzyLoadLine{from{transform:translateX(-120%)}to{transform:translateX(260%)}}
@@ -602,7 +599,7 @@ main{padding:0 12px!important;max-width:100%!important}
 </head>
 <body>
 <div id="izzyCinematicLoader" role="status" aria-live="polite" aria-label="Loading Izzy Power Electronics Hub">
- <div class="izzy-loader-mark"><span class="izzy-loader-ring" aria-hidden="true"></span><img id="izzyLoaderLogo" alt="Izzy Power Electronics Hub logo"></div>
+ <div class="izzy-loader-mark"><span class="izzy-loader-ring" aria-hidden="true"></span><span class="izzy-loader-symbol" aria-hidden="true">⚡</span></div>
  <div class="izzy-loader-name">Izzy Power</div><div class="izzy-loader-line" aria-hidden="true"></div><div class="izzy-loader-caption">Powering better choices</div>
 </div>
 <div class="topbar">Smart tech. Better value. <b>Flexible ways to pay</b> — delivery across Nigeria</div>
@@ -1097,9 +1094,6 @@ loadProducts();
 <script>
 (function(){
  const loader=document.getElementById('izzyCinematicLoader');
- const logo=document.querySelector('.header .logo')||document.querySelector('.logo');
- const loaderLogo=document.getElementById('izzyLoaderLogo');
- if(logo&&loaderLogo)loaderLogo.src=logo.currentSrc||logo.src;
  let dismissed=false;
  function dismiss(){if(dismissed||!loader)return;dismissed=true;loader.classList.add('is-leaving');setTimeout(()=>loader.remove(),650)}
  if(document.readyState==='complete')setTimeout(dismiss,700);
