@@ -105,7 +105,7 @@ module.exports=async function handler(req,res) {
         const url=base+'?page='+page;
         const response=await fetch(url,{headers:{'User-Agent':'Mozilla/5.0 (compatible; IzzyPowerCatalogueImporter/1.0)','Accept':'text/html,application/xhtml+xml'}});
         if(!response.ok){errors.push('HTTP '+response.status+' at '+url);break}
-        const html=await response.text(),before=items.length;htmlBytes+=html.length;productLinksSeen+=([...html.matchAll(/<a\\b[^>]*href=/gi)]).length;
+        const html=await response.text(),before=items.length;htmlBytes+=html.length;productLinksSeen+=([...html.matchAll(/<a\b[^>]*href=/gi)]).length;
         parsePage(html,items);pagesScanned++;
         if(items.length===before)emptyPages++;else emptyPages=0;
         if(emptyPages>=2)break;
