@@ -67,34 +67,27 @@ function parsePage(html,out) {
   for(const m of html.matchAll(/<script[^>]*type=["']application\/ld\+json["'][^>]*>([\s\S]*?)<\/script>/gi)){
     try{fromJson(JSON.parse(m[1]),out)}catch{}
   }
-  // Fouani's live shop/search cards use product links, lazy-loaded images and
-  // currency text in the same card; don't depend on one theme-specific CSS class.
   const links=[...html.matchAll(/<a\b[^>]*href=["']([^"']+)["'][^>]*>([\s\S]*?)<\/a>/gi)];
-  for(let i=0;i<links.length;i++){
-    const m=links[i],href=m[1],open=m[0].slice(0,m[0].indexOf('>'));
-    // Fouani uses clean localized SEO URLs (for example /nigeria-en/<product-slug>),
-    // not necessarily a /products/ path. Exclude navigation routes instead.
+  for(const m of links){
+    const href=m[1],open=m[0].slice(0,m[0].indexOf('>'));
     if(/\/(?:shop|search|cart|checkout|account|login|register)(?:[/?#]|$)|dispatch=/i.test(href))continue;
-    let name=plain(m[2])||plain(attr(open,'title'))||plain(attr(open,'aria-label'));
+    const name=plain(m[2])||plain(attr(open,'title'))||plain(attr(open,'aria-label'));
     if(!name||name.length<5||name.length>240)continue;
-    const pos=m.index||0;
-    // Product images, titles and prices may be separate elements within a card.
-    const start=Math.max(0,pos-4200),context=html.slice(start,Math.min(html.length,pos+5200)),center=pos-start;
+    const pos=m.index||0,start=Math.max(0,pos-4200),context=html.slice(start,Math.min(html.length,pos+5200)),center=pos-start;
     const image=nearestImage(context,center),price=nearestPrice(context,center);
-    if(!image||!price)continue;
-    addProduct(out,{name,image,price,url:href});
+    if(image&&price)addProduct(out,{name,image,price,url:href});
   }
-  // Some responsive layouts place the title in a heading and image/link elsewhere.
-  for(const m of html.matchAll(/<h[2-5]\\b[^>]*>([\\s\\S]*?)<\\/h[2-5]>/gi)){
+  // Also inspect heading-based cards where title, image and price are siblings.
+  for(const m of html.matchAll(/<h[2-5]\b[^>]*>([\s\S]*?)<\/h[2-5]>/gi)){
     const name=plain(m[1]);if(!name||name.length<5||name.length>240)continue;
     const pos=m.index||0,start=Math.max(0,pos-4500),context=html.slice(start,Math.min(html.length,pos+5500)),center=pos-start;
     const image=nearestImage(context,center),price=nearestPrice(context,center);
-    const hrefMatch=context.match(/<a\\b[^>]*href=["']([^"']+)["'][^>]*>/i);
+    const hrefMatch=context.match(/<a\b[^>]*href=["']([^"']+)["'][^>]*>/i);
     const href=hrefMatch?.[1]||'';
-    if(image&&price&&href&&!/\\/(?:shop|search|cart|checkout|account|login|register)(?:[/?#]|$)|dispatch=/i.test(href))addProduct(out,{name,image,price,url:href});
-  }
+    if(image&&price&&href&&!/\/(?:shop|search|cart|checkout|account|login|register)(?:[/?#]|$)|dispatch=/i.test(href))addProduct(out,{name,image,price,url:href});
   }
 }
+
 module.exports=async function handler(req,res) {
   res.setHeader('Cache-Control','s-maxage=300, stale-while-revalidate=900');
   res.setHeader('Content-Type','application/json; charset=utf-8');
@@ -119,7 +112,7 @@ module.exports=async function handler(req,res) {
     }
     if(!items.length){
       const sample=await fetch(BASES[0],{headers:{'User-Agent':'Mozilla/5.0 (compatible; IzzyPowerCatalogueImporter/1.0)','Accept':'text/html,application/xhtml+xml'}}).then(r=>r.text()).catch(()=> '');
-      const title=sample.match(/<title[^>]*>([\\s\\S]*?)<\\/title>/i)?.[1]?.replace(/<[^>]+>/g,' ').trim()||'not available';
+      const title=sample.match(/<title[^>]*>([\s\S]*?)<\/title>/i)?.[1]?.replace(/<[^>]+>/g,' ').trim()||'not available';
       const priceTokens=(sample.match(/(?:NGN|₦|&#8358;|&#x20a6;)[^<]{0,40}/gi)||[]).slice(0,5);
       throw new Error(`Fouani pages were reached, but no complete product cards could be extracted. No products were saved. Diagnostic: ${pagesScanned} pages scanned, ${htmlBytes} HTML characters, ${productLinksSeen} links inspected; response title: ${title}; price samples: ${priceTokens.join(' | ')||'none'}. This points to a source-page markup or access change, not a Firebase write failure.`);
     }
