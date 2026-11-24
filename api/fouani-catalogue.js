@@ -76,15 +76,17 @@ function parsePage(html,out) {
   const links=[...html.matchAll(/<a\b[^>]*href=["']([^"']+)["'][^>]*>([\s\S]*?)<\/a>/gi)];
   for(let i=0;i<links.length;i++){
     const m=links[i],href=m[1],open=m[0].slice(0,m[0].indexOf('>'));
-    if(!/(?:\/products?\/|\/product\/|\.html(?:\?|$))/i.test(href))continue;
+    // Fouani uses clean localized SEO URLs (for example /nigeria-en/<product-slug>),
+    // not necessarily a /products/ path. Exclude navigation routes instead.
+    if(/\/(?:shop|search|cart|checkout|account|login|register)(?:[/?#]|$)|dispatch=/i.test(href))continue;
     let name=plain(m[2])||plain(attr(open,'title'))||plain(attr(open,'aria-label'));
-    if(!name||name.length<4||name.length>240)continue;
+    if(!name||name.length<5||name.length>240)continue;
     const pos=m.index||0;
-    const prev=html.lastIndexOf('<div',pos),nextAnchor=links[i+1]?.index??(pos+5000);
-    const start=Math.max(0,prev>=0?prev:pos-1800,pos-1200);
-    const end=Math.min(html.length,Math.max(pos+1600,Math.min(nextAnchor+1800,pos+5200)));
-    const context=html.slice(start,end);
+    const context=html.slice(Math.max(0,pos-3200),Math.min(html.length,pos+4200));
     const image=nearestImage(context),price=nearestPrice(context);
+    // Only treat it as a product if the surrounding card actually contains
+    // both a product image and a numeric price; this excludes menus and banners.
+    if(!image||!price)continue;
     addProduct(out,{name,image,price,url:href});
   }
 }
@@ -93,7 +95,7 @@ module.exports=async function handler(req,res) {
   res.setHeader('Content-Type','application/json; charset=utf-8');
   if(req.method!=='GET')return res.status(405).json({error:'Method not allowed'});
   const requested=Math.max(1,Math.min(240,Number(req.query?.limit)||220));
-  const items=[];let pagesScanned=0;const errors=[];
+  const items=[];let pagesScanned=0;const errors=[];let htmlBytes=0,productLinksSeen=0;
   try{
     // Search contains the full Fouani catalogue (currently 821 listings).
     // Try search pagination first, then shop pagination as a fallback.
@@ -103,14 +105,14 @@ module.exports=async function handler(req,res) {
         const url=base+'?page='+page;
         const response=await fetch(url,{headers:{'User-Agent':'Mozilla/5.0 (compatible; IzzyPowerCatalogueImporter/1.0)','Accept':'text/html,application/xhtml+xml'}});
         if(!response.ok){errors.push('HTTP '+response.status+' at '+url);break}
-        const html=await response.text(),before=items.length;
+        const html=await response.text(),before=items.length;htmlBytes+=html.length;productLinksSeen+=([...html.matchAll(/<a\\b[^>]*href=/gi)]).length;
         parsePage(html,items);pagesScanned++;
         if(items.length===before)emptyPages++;else emptyPages=0;
         if(emptyPages>=2)break;
       }
       if(items.length>=requested)break;
     }
-    if(!items.length)throw new Error('Fouani pages were reached, but the importer could not recognise product links, prices and images in the returned page markup. No products were saved. The importer now checks the full search catalogue as well as the shop pages; the next diagnostic needs the live page HTML structure.');
+    if(!items.length)throw new Error('Fouani pages were reached, but the importer could not recognise product links, prices and images in the returned page markup. No products were saved. The importer now checks the full search catalogue as well as the shop pages. Diagnostic: pagesScanned+" pages, "+htmlBytes+" HTML characters, "+productLinksSeen+" links inspected."');
     return res.status(200).json({source:'Fouani Nigeria official catalogue',count:Math.min(items.length,requested),pagesScanned,items:items.slice(0,requested)});
   }catch(error){
     console.error('Fouani catalogue import:',error);
