@@ -51,13 +51,13 @@ function attr(tag,name) {
   return tag.match(re)?.[2]||'';
 }
 function nearestImage(context,center=Math.floor(context.length/2)) {
-  const matches=[...context.matchAll(/<img\\b[^>]*>/gi)];
-  const usable=matches.map(m=>({at:m.index,tag:m[0],url:attr(m[0],'data-src')||attr(m[0],'data-lazy-src')||attr(m[0],'data-original')||attr(m[0],'src')||attr(m[0],'srcset').split(',')[0].trim().split(/\\s+/)[0]})).filter(x=>x.url&&!/placeholder|blank\\./i.test(x.url));
+  const matches=[...context.matchAll(/<img\b[^>]*>/gi)];
+  const usable=matches.map(m=>({at:m.index,tag:m[0],url:attr(m[0],'data-src')||attr(m[0],'data-lazy-src')||attr(m[0],'data-original')||attr(m[0],'src')||attr(m[0],'srcset').split(',')[0].trim().split(/\s+/)[0]})).filter(x=>x.url&&!/placeholder|blank\./i.test(x.url));
   return usable.sort((a,b)=>Math.abs(a.at-center)-Math.abs(b.at-center))[0]?.url||'';
 }
 function nearestPrice(context,center=Math.floor(context.length/2)) {
   const found=[];
-  for(const re of [/(?:ty-price-num|ty-price|price-num|product-price)[^>]*>([\\s\\S]{1,140}?)<\\//gi,/(?:NGN|₦|&#8358;|&#x20a6;)\\s*[\\d,]+(?:\\.\\d{1,2})?/gi,/(?:data-price|data-ca-price)\\s*=\\s*["']([\\d,.]+)["']/gi]){
+  for(const re of [/(?:ty-price-num|ty-price|price-num|product-price)[^>]*>([\s\S]{1,140}?)<\//gi,/(?:NGN|₦|&#8358;|&#x20a6;)\s*[\d,]+(?:\.\d{1,2})?/gi,/(?:data-price|data-ca-price)\s*=\s*["']([\d,.]+)["']/gi]){
     for(const m of context.matchAll(re)){const p=priceNumber(plain(m[1]||m[0]));if(p)found.push({at:m.index,price:p})}
   }
   found.sort((a,b)=>Math.abs(a.at-center)-Math.abs(b.at-center));
