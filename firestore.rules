@@ -6,7 +6,7 @@ service cloud.firestore {
     }
     function verifiedAdmin() {
       return signedIn()
-        && request.auth.token.email in ['Ubahdaniel823@gmail.com', 'ubahdaniel823@gmail.com']
+        && request.auth.token.email == 'Ubahdaniel823@gmail.com'
         && request.auth.token.email_verified == true;
     }
     match /products/{productId} {
