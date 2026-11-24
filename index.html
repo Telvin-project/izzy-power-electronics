@@ -955,7 +955,7 @@ const app=getApps().length?getApps()[0]:initializeApp(firebaseConfig),auth=getAu
 const ADMIN='Ubahdaniel823@gmail.com'.toLowerCase();
 await setPersistence(auth,browserLocalPersistence).catch(console.error);
 window.izzyFirebaseAuth=auth; window.izzyDb=db;
-const msg=(t)=>{if(typeof window.toast==='function')window.toast(t);else alert(t)};
+const msg=(value)=>{const text=typeof value==='string'?value:(value?.message&&typeof value.message==='string'?value.message:(()=>{try{return JSON.stringify(value)}catch{return String(value)}})());if(typeof window.toast==='function')window.toast(text);else alert(text)};
 const esc=(x='')=>String(x).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 function syncProduct(p){let i=products.findIndex(x=>x.id===p.id);if(i<0)products.push(p);else products[i]=p}
 async function loadProducts(){
@@ -1045,8 +1045,9 @@ function addAdminPanel(user){
      if(!needed){msg('Your catalogue already has '+current.size+' products. No products were changed.');return}
      btn.textContent='Reading Fouani catalogue…';
      const response=await fetch('/api/fouani-catalogue?limit=240',{headers:{'Accept':'application/json'}});
-     const payload=await response.json().catch(()=>({}));
-     if(!response.ok)throw new Error(payload.error||'Could not retrieve Fouani products.');
+     const rawResponse=await response.text();
+     let payload={};try{payload=JSON.parse(rawResponse)}catch{}
+     if(!response.ok){const detail=typeof payload.error==='string'?payload.error:(payload.error?.message||payload.message||rawResponse.slice(0,240));throw new Error('Fouani catalogue service returned HTTP '+response.status+'. '+(detail||'No further error details were supplied.'))}
      if(!Array.isArray(payload.items)||!payload.items.length)throw new Error('Fouani returned no usable product listings. Nothing was imported.');
      const existingNames=new Set(current.docs.map(d=>String(d.data().name||'').toLowerCase().replace(/[^a-z0-9]+/g,' ').trim()));
      const existingUrls=new Set(current.docs.map(d=>String(d.data().sourceUrl||'').split('?')[0].toLowerCase()).filter(Boolean));
@@ -1074,7 +1075,7 @@ function addAdminPanel(user){
      }
      await renderAdminProducts();await loadProducts();await refreshStats();
      msg('Fouani import finished. Added: '+added+'. Skipped as duplicates/invalid: '+skipped+'. Failed: '+failed+'. Catalogue total: '+(current.size+added)+'.');
-   }catch(e){console.error('Fouani import failed:',e);msg(e.message||'Fouani import failed. No existing products were deleted.')}
+   }catch(e){console.error('Fouani import failed:',e);const detail=typeof e?.message==='string'?e.message:(typeof e==='string'?e:(()=>{try{return JSON.stringify(e)}catch{return String(e)}})());msg(detail&&detail!=='[object Object]'?detail:'Fouani import failed. The server returned an unreadable error; no existing products were deleted. Check the browser console for the full diagnostic.')}
    finally{btn.disabled=false;btn.textContent=original}
  });
  async function loadCategories(){const out=panel.querySelector('#vaCategoryList');out.textContent='Loading categories…';try{const snap=await getDocs(collection(db,'categories'));categoryDocs=snap.docs.map(d=>({id:d.id,...d.data()}));const known=new Set(categoryDocs.map(c=>c.name));for(const name of STORE_CATEGORIES){if(!known.has(name)){await setDoc(doc(db,'categories',name.toLowerCase().replace(/[^a-z0-9]+/g,'-')),{name,createdAt:serverTimestamp()});categoryDocs.push({id:name.toLowerCase().replace(/[^a-z0-9]+/g,'-'),name})}}categoryOptions();panel.querySelector('#vaCategoryCount').textContent=categoryDocs.length;out.innerHTML=categoryDocs.length?`<div class="va-table-wrap"><table><thead><tr><th>Category</th><th>Actions</th></tr></thead><tbody>${categoryDocs.map(c=>`<tr><td><b>${esc(c.name||c.id)}</b></td><td><div class="va-row-actions"><button data-cat-edit="${esc(c.id)}">Rename</button><button data-cat-del="${esc(c.id)}">Delete</button></div></td></tr>`).join('')}</tbody></table></div>`:'<div class="va-empty">No categories yet. Add your first category above.</div>';out.querySelectorAll('[data-cat-edit]').forEach(b=>b.onclick=async()=>{const c=categoryDocs.find(x=>x.id===b.dataset.catEdit);const name=prompt('New category name:',c?.name||'');if(name===null||!name.trim())return;try{await updateDoc(doc(db,'categories',c.id),{name:name.trim(),updatedAt:serverTimestamp()});await loadCategories();msg('Category renamed.')}catch(e){msg('Could not rename category. Check Firestore rules.')}});out.querySelectorAll('[data-cat-del]').forEach(b=>b.onclick=async()=>{const c=categoryDocs.find(x=>x.id===b.dataset.catDel);if(!confirm('Delete category '+(c?.name||'')+'? Existing products will not be deleted.'))return;try{await deleteDoc(doc(db,'categories',b.dataset.catDel));await loadCategories();msg('Category deleted.')}catch(e){msg('Could not delete category. Check Firestore rules.')}})}catch(e){out.textContent='Could not load categories. Check that Firestore rules allow the admin to read categories.';console.error(e)}}
