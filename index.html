@@ -644,6 +644,15 @@ main{padding:0 12px!important;max-width:100%!important}
  .product.compact-product .prodinfo h3,.shop-grid .product .prodinfo h3{font-size:12px!important}
  .product.compact-product .prodinfo .price-line strong,.shop-grid .product .prodinfo .price-line strong{font-size:14px!important}
 }
+
+/* Apply the same compact layout to every homepage and shop product-card variant. */
+.product .prodimg{height:clamp(116px,24vw,150px)!important;padding:8px!important}
+.product .prodinfo{padding:9px 10px 11px!important}
+.product .brand,.product .spec,.product .stock-line,.product .details-link,
+.product .productactions,.product .tag,.product .heart{display:none!important}
+.product .prodinfo h3{margin:0!important;min-height:0!important;max-height:2.7em!important;overflow:hidden;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical}
+.product .prodinfo .price,.product .prodinfo .price-line{margin:5px 0 0!important}
+@media(max-width:430px){.product .prodimg{height:122px!important}.product .prodinfo{padding:8px!important}}
 </style>
 </head>
 <body>
