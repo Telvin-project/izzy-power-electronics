@@ -608,6 +608,43 @@ main{padding:0 12px!important;max-width:100%!important}
 .shop-grid .product.compact-product .prodimg{height:clamp(112px,22vw,170px)!important}
 @media(max-width:430px){.product.compact-product .prodimg,.shop-grid .product.compact-product .prodimg{height:118px!important}.product.compact-product .prodinfo{padding:8px!important}.product.compact-product .prodinfo h3{font-size:12px}.product.compact-product .price-line strong{font-size:14px}}
 </style>
+<style>
+/* Compact storefront product cards: image, name and price only. Details remain on the product page. */
+.product.compact-product .prodimg,
+.shop-grid .product .prodimg{height:clamp(116px,24vw,150px)!important;padding:8px!important;flex:0 0 auto}
+.product.compact-product .prodimg img,
+.shop-grid .product .prodimg img{width:100%;height:100%;object-fit:contain}
+.product.compact-product .prodinfo,
+.shop-grid .product .prodinfo{padding:9px 10px 11px!important;display:flex;flex-direction:column;gap:3px}
+.product.compact-product .prodinfo h3,
+.shop-grid .product .prodinfo h3{font-size:13px!important;line-height:1.35!important;min-height:0!important;max-height:2.7em!important;overflow:hidden;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;margin:0!important}
+.product.compact-product .prodinfo .price,
+.product.compact-product .prodinfo .price-line,
+.shop-grid .product .prodinfo .price,
+.shop-grid .product .prodinfo .price-line{margin:5px 0 0!important}
+.product.compact-product .prodinfo .price-line strong,
+.shop-grid .product .prodinfo .price-line strong{font-size:15px!important}
+.product.compact-product .brand,
+.product.compact-product .spec,
+.product.compact-product .stock-line,
+.product.compact-product .details-link,
+.product.compact-product .productactions,
+.product.compact-product .tag,
+.product.compact-product .heart,
+.shop-grid .product .brand,
+.shop-grid .product .spec,
+.shop-grid .product .stock-line,
+.shop-grid .product .details-link,
+.shop-grid .product .productactions,
+.shop-grid .product .tag,
+.shop-grid .product .heart{display:none!important}
+@media(max-width:430px){
+ .product.compact-product .prodimg,.shop-grid .product .prodimg{height:122px!important}
+ .product.compact-product .prodinfo,.shop-grid .product .prodinfo{padding:8px!important}
+ .product.compact-product .prodinfo h3,.shop-grid .product .prodinfo h3{font-size:12px!important}
+ .product.compact-product .prodinfo .price-line strong,.shop-grid .product .prodinfo .price-line strong{font-size:14px!important}
+}
+</style>
 </head>
 <body>
 <div id="izzyCinematicLoader" role="status" aria-live="polite" aria-label="Loading Izzy Power Electronics Hub">
