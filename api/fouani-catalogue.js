@@ -78,12 +78,21 @@ function parsePage(html,out) {
     let name=plain(m[2])||plain(attr(open,'title'))||plain(attr(open,'aria-label'));
     if(!name||name.length<5||name.length>240)continue;
     const pos=m.index||0;
-    const start=Math.max(0,pos-1900),context=html.slice(start,Math.min(html.length,pos+2400)),center=pos-start;
+    // Product images, titles and prices may be separate elements within a card.
+    const start=Math.max(0,pos-4200),context=html.slice(start,Math.min(html.length,pos+5200)),center=pos-start;
     const image=nearestImage(context,center),price=nearestPrice(context,center);
-    // Only treat it as a product if the surrounding card actually contains
-    // both a product image and a numeric price; this excludes menus and banners.
     if(!image||!price)continue;
     addProduct(out,{name,image,price,url:href});
+  }
+  // Some responsive layouts place the title in a heading and image/link elsewhere.
+  for(const m of html.matchAll(/<h[2-5]\\b[^>]*>([\\s\\S]*?)<\\/h[2-5]>/gi)){
+    const name=plain(m[1]);if(!name||name.length<5||name.length>240)continue;
+    const pos=m.index||0,start=Math.max(0,pos-4500),context=html.slice(start,Math.min(html.length,pos+5500)),center=pos-start;
+    const image=nearestImage(context,center),price=nearestPrice(context,center);
+    const hrefMatch=context.match(/<a\\b[^>]*href=["']([^"']+)["'][^>]*>/i);
+    const href=hrefMatch?.[1]||'';
+    if(image&&price&&href&&!/\\/(?:shop|search|cart|checkout|account|login|register)(?:[/?#]|$)|dispatch=/i.test(href))addProduct(out,{name,image,price,url:href});
+  }
   }
 }
 module.exports=async function handler(req,res) {
@@ -108,7 +117,12 @@ module.exports=async function handler(req,res) {
       }
       if(items.length>=requested)break;
     }
-    if(!items.length)throw new Error(\`Fouani pages were reached, but the importer could not recognise product links, prices and images in the returned page markup. No products were saved. Diagnostic: \${pagesScanned} pages, \${htmlBytes} HTML characters, \${productLinksSeen} links inspected.\`);
+    if(!items.length){
+      const sample=await fetch(BASES[0],{headers:{'User-Agent':'Mozilla/5.0 (compatible; IzzyPowerCatalogueImporter/1.0)','Accept':'text/html,application/xhtml+xml'}}).then(r=>r.text()).catch(()=> '');
+      const title=sample.match(/<title[^>]*>([\\s\\S]*?)<\\/title>/i)?.[1]?.replace(/<[^>]+>/g,' ').trim()||'not available';
+      const priceTokens=(sample.match(/(?:NGN|₦|&#8358;|&#x20a6;)[^<]{0,40}/gi)||[]).slice(0,5);
+      throw new Error(`Fouani pages were reached, but no complete product cards could be extracted. No products were saved. Diagnostic: ${pagesScanned} pages scanned, ${htmlBytes} HTML characters, ${productLinksSeen} links inspected; response title: ${title}; price samples: ${priceTokens.join(' | ')||'none'}. This points to a source-page markup or access change, not a Firebase write failure.`);
+    }
     return res.status(200).json({source:'Fouani Nigeria official catalogue',count:Math.min(items.length,requested),pagesScanned,items:items.slice(0,requested)});
   }catch(error){
     console.error('Fouani catalogue import:',error);
