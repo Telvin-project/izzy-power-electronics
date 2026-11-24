@@ -108,7 +108,7 @@ module.exports=async function handler(req,res) {
       }
       if(items.length>=requested)break;
     }
-    if(!items.length)throw new Error('Fouani pages were reached, but the importer could not recognise product links, prices and images in the returned page markup. No products were saved. The importer now checks the full search catalogue as well as the shop pages. Diagnostic: pagesScanned+" pages, "+htmlBytes+" HTML characters, "+productLinksSeen+" links inspected."');
+    if(!items.length)throw new Error(\`Fouani pages were reached, but the importer could not recognise product links, prices and images in the returned page markup. No products were saved. Diagnostic: \${pagesScanned} pages, \${htmlBytes} HTML characters, \${productLinksSeen} links inspected.\`);
     return res.status(200).json({source:'Fouani Nigeria official catalogue',count:Math.min(items.length,requested),pagesScanned,items:items.slice(0,requested)});
   }catch(error){
     console.error('Fouani catalogue import:',error);
