@@ -47,7 +47,7 @@ function fromJson(value,out) {
   for(const child of Object.values(value))if(child&&typeof child==='object')fromJson(child,out);
 }
 function attr(tag,name) {
-  const re=new RegExp('(?:^|\\s)'+name+'\\s*=\\s*(["\\'])(.*?)\\1','i');
+  const re=new RegExp("(?:^|\\\\s)"+name+"\\\\s*=\\\\s*([\\\"\'])(.*?)\\\\1","i");
   return tag.match(re)?.[2]||'';
 }
 function nearestImage(context) {
